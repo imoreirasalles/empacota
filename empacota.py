@@ -1,7 +1,7 @@
 from xml.etree import ElementTree as ET
 from openpyxl import Workbook
 
-#comentário
+#comentário alterado novamente
 
 with open("Teste_Literatura_1050.xml", "rt") as f:
     tree = ET.parse(f)
