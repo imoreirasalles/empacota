@@ -1,10 +1,9 @@
 from xml.etree import ElementTree as ET
 from openpyxl import Workbook
 
-#comentário adulterado novamente outra vez
-
-with open("Teste_Literatura_1050.xml", "rt") as f:
-    tree = ET.parse(f)
+with open("literatura.xml", "rt") as f:
+   tree = ET.parse(f)
+   filename = f.name 
 root = tree.getroot()
 
 ns = { 'cumulus' : 'http://www.canto.com/ns/Export/1.0'}
@@ -21,7 +20,7 @@ def mk_header():
    col = 'A'
    uidcampo = {}
    for node in root[0][0].findall('cumulus:Field', ns):
-      print(node.attrib, node.text)
+      #print(node.attrib, node.text)
       campo = node.find('cumulus:Name', ns)
       ws[ col + str(row)] = campo.text
       col = chr(ord(col) + 1)
@@ -30,7 +29,9 @@ def mk_header():
 
 def fill_record(dic):
    row = 2
+   count = 0
    for ITEM in root[1]:
+      count += 1
       col = 'A'
       for FieldValue in ITEM.findall('cumulus:FieldValue', ns):
          if FieldValue.attrib['uid'] in dic.keys():
@@ -39,8 +40,11 @@ def fill_record(dic):
                 col = chr( 97 + list(dic.keys()).index(chave) )
                 ws[ col + str(row)] = campo.text
       row += 1
+   return count
+
 
 dic = mk_header()
-fill_record(dic)
+itens = fill_record(dic)
+print('Você converteu', len(dic), 'campos e preencheu', itens, 'itens.')
 
-wb.save('teste_1050.xlsx')
+wb.save(str(filename)[:-4]+'.xlsx')
