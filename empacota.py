@@ -2,7 +2,7 @@ from xml.etree import ElementTree as ET
 from openpyxl import Workbook
 from openpyxl.utils import get_column_letter, column_index_from_string
 
-with open("arquivo.xml", "rt") as f:
+with open("arquivo.xml", "rt", encoding="utf8") as f:
    tree = ET.parse(f)
    filename = f.name
 root = tree.getroot()
@@ -15,6 +15,7 @@ ws.title = 'Cumulus'
 
 def mk_header():
    """preenche primeira linha da planilha
+
       com os campos exportados, retornando
       dicionário com uid : nome do campo"""
    row = 1
@@ -32,14 +33,14 @@ def fill_record(dic):
    row = 2
    count = 0
    for ITEM in root[1]:
-      count += 1
+      
       for FieldValue in ITEM.findall('cumulus:FieldValue', ns):
          if FieldValue.attrib['uid'] in dic.keys():
             chave = FieldValue.attrib['uid']
             for campo in FieldValue.iter():
-                if list(dic.keys()).index(chave) != 0:
-                    col = get_column_letter(list(dic.keys()).index(chave) + 1)
-                    ws[ col + str(row)] = campo.text
+                col = get_column_letter(list(dic.keys()).index(chave) + 1)
+                ws[ col + str(row)] = campo.text
+      count += 1
       row += 1
    return count
 
